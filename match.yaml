@@ -18,7 +18,7 @@ spec:
     spec:
       containers:
       - name: match
-        image: docker.ysd.com/socddp/match:V2
+        image: docker.ysd.com//match:V2
         ports:
         - name: config
           containerPort: 8767
@@ -42,23 +42,23 @@ spec:
         - name: REDIS_PORT
           value: 
         - name: REDIS_PASS
-          value: "12345678"
+          value: ""
         #mysql
         - name: DB_HOST
-          value: "192.168.100.40"
+          value: ""
         - name: DB_NAME
-          value: "socddp"
+          value: ""
         - name: DB_USER
-          value: "socddp-user"
+          value:
         - name: DB_PASS
-          value: "ddf1Utb8J%GgyFY0"
+          value: ""
         #mq
         - name: MQ_HOST
-          value: "192.168.100.51"
+          value: ""
         - name: MQ_USER
           value: "admin"
         - name: MQ_PASS
-          value: "ysd342501"
+          value: ""
         #eureka
         - name: SVC_NAME
           value: "socddp-eureka"

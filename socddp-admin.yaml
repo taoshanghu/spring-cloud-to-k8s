@@ -2,23 +2,23 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
-    k8s-app: socddp-admin
-  name: socddp-admin
+    k8s-app: -admin
+  name: -admin
 spec:
   replicas: 1
   selector:
     matchLabels:
-      name: socddp-admin
+      name: -admin
       release: test
   template:
     metadata:
       labels:
-        name: socddp-admin
+        name: -admin
         release: test
     spec:
       containers:
-      - name: socddp-admin
-        image: docker.ysd.com/socddp/socddp-admin:V4
+      - name: -admin
+        image: docker.ysd.com//-admin:V4
         ports:
         - name: config
           containerPort: 8762
@@ -42,23 +42,23 @@ spec:
         - name: REDIS_PORT
           value: 
         - name: REDIS_PASS
-          value: "12345678"
+          value: ""
         #mysql
         - name: DB_HOST
-          value: "192.168.100.40"
+          value: ""
         - name: DB_NAME
-          value: "socddp"
+          value: ""
         - name: DB_USER
-          value: "socddp-user"
+          value:
         - name: DB_PASS
-          value: "ddf1Utb8J%GgyFY0"
+          value: ""
         #mq
         - name: MQ_HOST
-          value: "192.168.100.51"
+          value: ""
         - name: MQ_USER
           value: "admin"
         - name: MQ_PASS
-          value: "ysd342501"
+          value: ""
         #eureka
         - name: SVC_NAME
           value: "socddp-eureka"
@@ -66,20 +66,20 @@ spec:
           value: "3"
         #mode_name
         - name: MODE_NAME
-          value: "socddp-admin"
+          value: "-admin"
 ---
 apiVersion: v1
 kind: Service 
 metadata:
   labels:
-    name: socddp-admin
+    name: -admin
     release: test
-  name: socddp-admin
+  name: -admin
 spec:
   ports:
-  - name: socddp-admin
+  - name: -admin
     port: 8762
     targetPort: 8762
   selector:
-    name: socddp-admin
+    name: -admin
     release: test

@@ -2,23 +2,23 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
-    k8s-app: socddp-auth
-  name: socddp-auth
+    k8s-app: -auth
+  name: -auth
 spec:
   replicas: 1
   selector:
     matchLabels:
-      name: socddp-auth
+      name: -auth
       release: test
   template:
     metadata:
       labels:
-        name: socddp-auth
+        name: -auth
         release: test
     spec:
       containers:
-      - name: socddp-auth
-        image: docker.ysd.com/socddp/socddp-auth:V3
+      - name: -auth
+        image: docker.ysd.com//-auth:V3
         ports:
         - name: config
           containerPort: 5672
@@ -42,23 +42,23 @@ spec:
         - name: REDIS_PORT
           value: 
         - name: REDIS_PASS
-          value: "12345678"
+          value: ""
         #mysql
         - name: DB_HOST
-          value: "192.168.100.40"
+          value: ""
         - name: DB_NAME
-          value: "socddp"
+          value: ""
         - name: DB_USER
-          value: "socddp-user"
+          value:
         - name: DB_PASS
-          value: "ddf1Utb8J%GgyFY0"
+          value: ""
         #mq
         - name: MQ_HOST
-          value: "192.168.100.51"
+          value: ""
         - name: MQ_USER
           value: "admin"
         - name: MQ_PASS
-          value: "ysd342501"
+          value: ""
         #eureka
         - name: SVC_NAME
           value: "socddp-eureka"
@@ -66,20 +66,20 @@ spec:
           value: "3"
         #mode_name
         - name: MODE_NAME
-          value: "socddp-auth"
+          value: "-auth"
 ---
 apiVersion: v1
 kind: Service 
 metadata:
   labels:
-    name: socddp-auth
+    name: -auth
     release: test
-  name: socddp-auth
+  name: -auth
 spec:
   ports:
-  - name: socddp-auth
+  - name: -auth
     port: 5672
     targetPort: 5672
   selector:
-    name: socddp-auth
+    name: -auth
     release: test

@@ -2,23 +2,23 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
-    k8s-app: socddp-getway
-  name: socddp-getway
+    k8s-app: -getway
+  name: -getway
 spec:
   replicas: 1
   selector:
     matchLabels:
-      name: socddp-getway
+      name: -getway
       release: test
   template:
     metadata:
       labels:
-        name: socddp-getway
+        name: -getway
         release: test
     spec:
       containers:
-      - name: socddp-getway
-        image: docker.ysd.com/socddp/getway:V14
+      - name: -getway
+        image: docker.ysd.com//getway:V14
         ports:
         - name: getway
           containerPort: 8765
@@ -42,23 +42,23 @@ spec:
         - name: REDIS_PORT
           value: 
         - name: REDIS_PASS
-          value: "12345678"
+          value: ""
         #mysql
         - name: DB_HOST
-          value: "192.168.100.40"
+          value: ""
         - name: DB_NAME
-          value: "socddp"
+          value: ""
         - name: DB_USER
-          value: "socddp-user"
+          value:
         - name: DB_PASS
-          value: "ddf1Utb8J%GgyFY0"
+          value: ""
         #mq
         - name: MQ_HOST
-          value: "192.168.100.51"
+          value: ""
         - name: MQ_USER
           value: "admin"
         - name: MQ_PASS
-          value: "ysd342501"
+          value: ""
         #eureka
         - name: SVC_NAME
           value: "socddp-eureka"
@@ -66,22 +66,22 @@ spec:
           value: "3"
         #mode_name
         - name: MODE_NAME
-          value: "socddp-gate"
+          value: "-gate"
 ---
 apiVersion: v1
 kind: Service 
 metadata:
   labels:
-    name: socddp-getway
+    name: -getway
     release: test
-  name: socddp-getway
+  name: -getway
 spec:
   type: NodePort
   ports:
-  - name: socddp-getway
+  - name: -getway
     port: 8765
     targetPort: 8765
     nodePort: 30071 
   selector:
-    name: socddp-getway
+    name: -getway
     release: test
