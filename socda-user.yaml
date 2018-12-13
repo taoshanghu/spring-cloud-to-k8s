@@ -1,0 +1,85 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    k8s-app: user
+  name: user
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: user
+      release: test
+  template:
+    metadata:
+      labels:
+        name: user
+        release: test
+    spec:
+      containers:
+      - name: user
+        image: docker.ysd.com/socddp/socda-user:V3
+        ports:
+        - name: config
+          containerPort: 8110
+        livenessProbe:
+          httpGet:  
+            port: 8110
+            path: /info
+          initialDelaySeconds: 120
+          timeoutSeconds: 5
+        resources:
+          requests:
+            memory: "512Mi"
+            cpu: "100m"
+          limits:
+            memory: "1024Mi"
+            cpu: "500m"
+        env:
+        #redis
+        - name: REDIS_HOST
+          value: "redis-master.default.svc.cluster.local"
+        - name: REDIS_PORT
+          value: 
+        - name: REDIS_PASS
+          value: "12345678"
+        #mysql
+        - name: DB_HOST
+          value: "192.168.100.40"
+        - name: DB_NAME
+          value: "socddp"
+        - name: DB_USER
+          value: "socddp-user"
+        - name: DB_PASS
+          value: "ddf1Utb8J%GgyFY0"
+        #mq
+        - name: MQ_HOST
+          value: "192.168.100.51"
+        - name: MQ_USER
+          value: "admin"
+        - name: MQ_PASS
+          value: "ysd342501"
+        #eureka
+        - name: SVC_NAME
+          value: "socddp-eureka"
+        - name: "REPL"
+          value: "3"
+        #mode_name
+        - name: MODE_NAME
+          value: "user"
+---
+apiVersion: v1
+kind: Service 
+metadata:
+  labels:
+    name: user
+    release: test
+  name: user
+spec:
+  ports:
+  - name: user
+    port: 8110
+    targetPort: 8110
+  selector:
+    name: user
+    release: test

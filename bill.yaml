@@ -1,0 +1,85 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    k8s-app: bill
+  name: bill
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: bill
+      release: test
+  template:
+    metadata:
+      labels:
+        name: bill
+        release: test
+    spec:
+      containers:
+      - name: bill
+        image: docker.ysd.com/socddp/bill:V2
+        ports:
+        - name: config
+          containerPort: 8100
+        livenessProbe:
+          httpGet:  
+            port: 8100
+            path: /info
+          initialDelaySeconds: 120
+          timeoutSeconds: 5
+        resources:
+          requests:
+            memory: "512Mi"
+            cpu: "100m"
+          limits:
+            memory: "1024Mi"
+            cpu: "500m"
+        env:
+        #redis
+        - name: REDIS_HOST
+          value: "redis-master.default.svc.cluster.local"
+        - name: REDIS_PORT
+          value: 
+        - name: REDIS_PASS
+          value: "12345678"
+        #mysql
+        - name: DB_HOST
+          value: "192.168.100.40"
+        - name: DB_NAME
+          value: "socddp"
+        - name: DB_USER
+          value: "socddp-user"
+        - name: DB_PASS
+          value: "ddf1Utb8J%GgyFY0"
+        #mq
+        - name: MQ_HOST
+          value: "192.168.100.51"
+        - name: MQ_USER
+          value: "admin"
+        - name: MQ_PASS
+          value: "ysd342501"
+        #eureka
+        - name: SVC_NAME
+          value: "socddp-eureka"
+        - name: "REPL"
+          value: "3"
+        #mode_name
+        - name: MODE_NAME
+          value: "bill"
+---
+apiVersion: v1
+kind: Service 
+metadata:
+  labels:
+    name: bill
+    release: test
+  name: bill
+spec:
+  ports:
+  - name: bill
+    port: 8100
+    targetPort: 8100
+  selector:
+    name: bill
+    release: test

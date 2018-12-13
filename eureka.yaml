@@ -1,0 +1,60 @@
+# ------------------- spring boot Eureka pod------------------- #
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  labels:
+    k8s-app: socddp-eureka-node01
+  name: socddp-eureka-node01
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: socddp-eureka-node01
+      release: test
+  template:
+    metadata:
+      labels:
+        name: socddp-eureka-node01
+        release: test
+    spec:
+      containers:
+      - name: socddp-eureka-node01
+        image: docker.ysd.com/eureka:v1
+        ports:
+        - name: eureka
+          containerPort: 8761
+        readinessProbe:
+          httpGet:
+            port: 8761
+            path: /
+          initialDelaySeconds: 30
+        livenessProbe:
+          httpGet:  
+            port: 8761
+            path: /
+          initialDelaySeconds: 30
+          timeoutSeconds: 5
+        resources:
+          requests:
+            memory: "512Mi"
+            cpu: "100m"
+          limits:
+            memory: "1024Mi"
+            cpu: "500m"
+---
+# ------------------- spring boot Eureka service------------------- #
+apiVersion: v1
+kind: Service 
+metadata:
+  labels:
+    name: socddp-eureka-node01
+    release: test
+  name: socddp-eureka-node01
+spec:
+  ports:
+  - name: socddp-eureka-node01
+    port: 8761
+    targetPort: 8761
+  selector:
+    name: socddp-eureka-node01
+    release: test

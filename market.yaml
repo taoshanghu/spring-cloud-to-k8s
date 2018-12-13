@@ -1,0 +1,85 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    k8s-app: market
+  name: market
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: market
+      release: test
+  template:
+    metadata:
+      labels:
+        name: market
+        release: test
+    spec:
+      containers:
+      - name: market
+        image: docker.ysd.com/socddp/market:V2
+        ports:
+        - name: config
+          containerPort: 8150
+        livenessProbe:
+          httpGet:  
+            port: 8150
+            path: /info
+          initialDelaySeconds: 120
+          timeoutSeconds: 5
+        resources:
+          requests:
+            memory: "512Mi"
+            cpu: "100m"
+          limits:
+            memory: "1024Mi"
+            cpu: "500m"
+        env:
+        #redis
+        - name: REDIS_HOST
+          value: "redis-master.default.svc.cluster.local"
+        - name: REDIS_PORT
+          value: 
+        - name: REDIS_PASS
+          value: "12345678"
+        #mysql
+        - name: DB_HOST
+          value: "192.168.100.40"
+        - name: DB_NAME
+          value: "socddp"
+        - name: DB_USER
+          value: "socddp-user"
+        - name: DB_PASS
+          value: "ddf1Utb8J%GgyFY0"
+        #mq
+        - name: MQ_HOST
+          value: "192.168.100.51"
+        - name: MQ_USER
+          value: "admin"
+        - name: MQ_PASS
+          value: "ysd342501"
+        #eureka
+        - name: SVC_NAME
+          value: "socddp-eureka"
+        - name: "REPL"
+          value: "3"
+        #mode_name
+        - name: MODE_NAME
+          value: "market"
+---
+apiVersion: v1
+kind: Service 
+metadata:
+  labels:
+    name: market
+    release: test
+  name: market
+spec:
+  ports:
+  - name: market
+    port: 8150
+    targetPort: 8150
+  selector:
+    name: market
+    release: test

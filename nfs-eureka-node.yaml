@@ -1,0 +1,75 @@
+apiVersion: apps/v1
+kind: StatefulSet 
+metadata:
+  name: socddp-eureka
+spec:
+  serviceName: "socddp-eureka"
+  replicas: 4
+  selector:
+    matchLabels:
+      name: socddp-eureka
+      release: test
+  template:
+    metadata:
+      labels:
+        name: socddp-eureka
+        release: test
+    spec:
+      containers:
+      - name: socddp-eureka
+        image: docker.ysd.com/socddp/eureka:V24
+        ports:
+        - name: eureka
+          containerPort: 8761
+        env:
+        - name: SVC_NAME
+          value: "socddp-eureka"
+        - name: "REPL"
+          value: "4"
+        - name: SERVER_PORT
+          value: "8761"
+        #readinessProbe:
+        #  httpGet:
+        #    port: 8761
+        #    path: /
+        #  initialDelaySeconds: 30
+        livenessProbe:
+          httpGet:  
+            port: 8761
+            path: /
+          initialDelaySeconds: 60
+          timeoutSeconds: 2
+        resources:
+          requests:
+            memory: "300Mi"
+            cpu: "100m"
+          limits:
+            memory: "1024Mi"
+            cpu: "500m"
+        volumeMounts:
+        - name: nfs-data
+          mountPath: /opt/data
+  volumeClaimTemplates:
+  - metadata:
+      name: nfs-data
+    spec:
+      accessModes: ["ReadWriteOnce"]
+      resources:
+        requests:
+          storage: 100Mi
+---
+apiVersion: v1
+kind: Service 
+metadata:
+  labels:
+    name: socddp-eureka
+    release: test
+  name: socddp-eureka
+spec:
+  ports:
+  - name: socddp-eureka
+    port: 8761
+  clusterIP: None
+  selector:
+    name: socddp-eureka
+    release: test
